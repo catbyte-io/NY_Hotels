@@ -14,6 +14,7 @@ import com.mapbox.geojson.Point
 import com.mapbox.maps.dsl.cameraOptions
 import com.mapbox.maps.extension.compose.MapboxMap
 import com.mapbox.maps.extension.compose.animation.viewport.rememberMapViewportState
+import com.mapbox.maps.extension.compose.style.imports.rememberStyleImportState
 import com.mapbox.maps.extension.compose.style.standard.LightPresetValue
 import com.mapbox.maps.extension.compose.style.standard.MapboxStandardStyle
 import com.mapbox.maps.extension.compose.style.standard.StandardStyleConfigurationState
@@ -69,6 +70,13 @@ class MainActivity : ComponentActivity() {
                                 }
                                 return@onMapLongClicked true
                             }
+                        },
+                        styleImportsContent = {
+                            StyleImport(
+                                importId = "new-york-hotels",
+                                style = "asset://new-york-hotels.json",
+                                styleImportState = rememberStyleImportState()
+                            )
                         }
                     )
                 }
