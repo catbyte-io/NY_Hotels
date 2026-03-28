@@ -1,6 +1,7 @@
 package com.example.nyhotels
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
@@ -48,6 +49,11 @@ class MainActivity : ComponentActivity() {
                         standardStyleState = rememberStandardStyleState {
                             configurationsState.apply {
                                 lightPreset = LightPresetValue.DAWN
+                            }
+                            interactionsState.onPlaceLabelsClicked { placeLabel, context ->
+                                placeLabel.name?.let { Log.d("InteractionsApp", it) }
+                                Log.d("InteractionsApp", context.coordinateInfo.coordinate.toString())
+                                return@onPlaceLabelsClicked true
                             }
                         }
                     )
