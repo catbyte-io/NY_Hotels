@@ -6,6 +6,8 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.mapbox.geojson.Point
@@ -16,6 +18,7 @@ import com.mapbox.maps.extension.compose.style.standard.LightPresetValue
 import com.mapbox.maps.extension.compose.style.standard.MapboxStandardStyle
 import com.mapbox.maps.extension.compose.style.standard.StandardStyleConfigurationState
 import com.mapbox.maps.extension.compose.style.standard.rememberStandardStyleState
+import com.mapbox.maps.interactions.standard.generated.StandardPlaceLabelsFeature
 import com.mapbox.maps.plugin.attribution.Attribution
 import com.mapbox.maps.plugin.scalebar.ScaleBar
 
@@ -23,6 +26,9 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
+            val selectedPlaces = remember {
+                mutableStateListOf<StandardPlaceLabelsFeature>()
+            }
             MapboxMap(
                 Modifier.fillMaxSize().padding(top = 20.dp),
                 mapViewportState = rememberMapViewportState {
@@ -50,10 +56,18 @@ class MainActivity : ComponentActivity() {
                             configurationsState.apply {
                                 lightPreset = LightPresetValue.DAWN
                             }
-                            interactionsState.onPlaceLabelsClicked { placeLabel, context ->
-                                placeLabel.name?.let { Log.d("InteractionsApp", it) }
-                                Log.d("InteractionsApp", context.coordinateInfo.coordinate.toString())
+                            interactionsState.onPlaceLabelsClicked { placeLabel, _ ->
+                                placeLabel.setStandardPlaceLabelsState {
+                                    select(select = true)
+                                }
+                                selectedPlaces.add(placeLabel)
                                 return@onPlaceLabelsClicked true
+                            }
+                            interactionsState.onMapLongClicked { _ ->
+                                selectedPlaces.forEach {
+                                    it.removeFeatureState()
+                                }
+                                return@onMapLongClicked true
                             }
                         }
                     )
