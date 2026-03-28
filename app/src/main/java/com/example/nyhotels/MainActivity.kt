@@ -7,7 +7,10 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.mapbox.geojson.Point
@@ -20,6 +23,8 @@ import com.mapbox.maps.extension.compose.style.standard.MapboxStandardStyle
 import com.mapbox.maps.extension.compose.style.standard.StandardStyleConfigurationState
 import com.mapbox.maps.extension.compose.style.standard.rememberStandardStyleState
 import com.mapbox.maps.interactions.standard.generated.StandardPlaceLabelsFeature
+import com.mapbox.maps.interactions.FeatureState
+import com.mapbox.maps.interactions.FeaturesetFeature
 import com.mapbox.maps.plugin.attribution.Attribution
 import com.mapbox.maps.plugin.scalebar.ScaleBar
 
@@ -29,6 +34,9 @@ class MainActivity : ComponentActivity() {
         setContent {
             val selectedPlaces = remember {
                 mutableStateListOf<StandardPlaceLabelsFeature>()
+            }
+            var selectedPriceLabel by remember {
+                mutableStateOf<FeaturesetFeature<FeatureState>?>(null)
             }
             MapboxMap(
                 Modifier.fillMaxSize().padding(top = 20.dp),
