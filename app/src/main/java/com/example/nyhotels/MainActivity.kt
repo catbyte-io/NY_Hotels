@@ -83,7 +83,19 @@ class MainActivity : ComponentActivity() {
                             StyleImport(
                                 importId = "new-york-hotels",
                                 style = "asset://new-york-hotels.json",
-                                styleImportState = rememberStyleImportState()
+                                styleImportState = rememberStyleImportState {
+                                    interactionsState.onFeaturesetClicked("hotels-price") { priceLabel, _ ->
+                                        if (selectedPriceLabel?.id != priceLabel.id) {
+                                            selectedPriceLabel = priceLabel
+                                            selectedPriceLabel?.setFeatureState(
+                                                FeatureState {
+                                                    addBooleanState("hidden", true)
+                                                }
+                                            )
+                                        }
+                                        return@onFeaturesetClicked true
+                                    }
+                                }
                             )
                         }
                     )
