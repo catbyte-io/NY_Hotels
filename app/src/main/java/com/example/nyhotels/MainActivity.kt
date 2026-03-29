@@ -4,19 +4,30 @@ import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ModifierLocalBeyondBoundsLayout
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.mapbox.geojson.Point
 import com.mapbox.maps.dsl.cameraOptions
 import com.mapbox.maps.extension.compose.MapboxMap
 import com.mapbox.maps.extension.compose.animation.viewport.rememberMapViewportState
+import com.mapbox.maps.extension.compose.annotation.ViewAnnotation
 import com.mapbox.maps.extension.compose.style.imports.rememberStyleImportState
 import com.mapbox.maps.extension.compose.style.standard.LightPresetValue
 import com.mapbox.maps.extension.compose.style.standard.MapboxStandardStyle
@@ -27,6 +38,8 @@ import com.mapbox.maps.interactions.FeatureState
 import com.mapbox.maps.interactions.FeaturesetFeature
 import com.mapbox.maps.plugin.attribution.Attribution
 import com.mapbox.maps.plugin.scalebar.ScaleBar
+import com.mapbox.maps.viewannotation.geometry
+import com.mapbox.maps.viewannotation.viewAnnotationOptions
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -101,7 +114,40 @@ class MainActivity : ComponentActivity() {
                     )
                 }
 
-            )
+            ) {
+                selectedPriceLabel?.let {
+                    ViewAnnotation(
+                        options = viewAnnotationOptions {
+                            geometry(selectedPriceLabel?.geometry ?: Point.fromLngLat(-73.99, 40.72))
+                        }
+                    ) {
+                        Box(
+                            modifier = Modifier
+                                .shadow(
+                                    elevation = 8.dp,
+                                )
+                                .background(MaterialTheme.colorScheme.primary)
+                        ) {
+                            Column(
+                                modifier = Modifier
+                                    .align(Alignment.Center)
+                                    .padding(20.dp)
+                            ) {
+                                Text(
+                                    text = "${selectedPriceLabel?.properties?.getString("name")}",
+                                    fontSize = 20.sp,
+                                    color = Color.White
+                                )
+                                Text(
+                                    text = "$${selectedPriceLabel?.properties?.getString("price")}",
+                                    fontSize = 15.sp,
+                                    color = Color.White
+                                )
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 }
