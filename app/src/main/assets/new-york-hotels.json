@@ -19,6 +19,9 @@
   "featuresets": {
     "hotels-price": {
       "selectors": [{ "layer": "NY-hotels-price" }]
+    },
+    "ny-subway-lines": {
+      "selectors": [{ "layer": "subway-lines" }]
     }
   },
   "layers": [
@@ -31,7 +34,12 @@
       "minzoom": 9,
       "layout": {},
       "paint": {
-        "line-emissive-strength": 1,
+        "line-emissive-strength": [
+          "case",
+          ["boolean", ["feature-state", "selected"]],
+          10.0,
+          1.0
+        ],
         "line-depth-occlusion-factor": 0.9,
         "line-color": [
           "match",

@@ -51,6 +51,10 @@ class MainActivity : ComponentActivity() {
             var selectedPriceLabel by remember {
                 mutableStateOf<FeaturesetFeature<FeatureState>?>(null)
             }
+            var selectedSubwayLine by remember {
+                mutableStateOf<FeaturesetFeature<FeatureState>?>(null)
+            }
+
             MapboxMap(
                 Modifier.fillMaxSize().padding(top = 20.dp),
                 mapViewportState = rememberMapViewportState {
@@ -108,6 +112,17 @@ class MainActivity : ComponentActivity() {
                                         }
                                         return@onFeaturesetClicked true
                                     }
+                                    interactionsState.onFeaturesetClicked("ny-subway-lines") { subwayLine, _ ->
+                                        if (selectedSubwayLine?.id != subwayLine.id) {
+                                            selectedSubwayLine = subwayLine
+                                            selectedSubwayLine?.setFeatureState(
+                                                FeatureState {
+                                                    addBooleanState("selected", true)
+                                                }
+                                            )
+                                        }
+                                        return@onFeaturesetClicked true
+                                    }
                                 }
                             )
                         }
@@ -145,6 +160,27 @@ class MainActivity : ComponentActivity() {
                                 )
                             }
                         }
+                    }
+                selectedSubwayLine?.let { subwayLine ->
+                    ViewAnnotation(
+                        options = viewAnnotationOptions {
+                            geometry(subwayLine.geometry)
+                        }
+                    ) {
+                        Box(
+                            modifier = Modifier
+                                .shadow(elevation = 8.dp)
+                                .background(Color.DarkGray)
+                                .padding(10.dp)
+                        ) {
+                            Text(
+                                text = "${subwayLine.properties.getString("name")}",
+                                fontSize = 15.sp,
+                                color = Color.White
+                            )
+                        }
+                    }
+
                     }
                 }
             }
